@@ -23,3 +23,8 @@ $ python code_base_analizer.py your_project_path
 ```
 
 For more information type: ```$ python code_base_analizer.py -h```
+
+## Testing
+```
+$ PYTHONPATH=. pytest
+```
