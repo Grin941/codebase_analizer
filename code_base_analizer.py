@@ -76,8 +76,8 @@ class CodeBaseAnalizer(object):
         return self._get_top_verbs(function_name_verbs, top_size)
 
 
-class CodeBaseReportService(object):
-    """ Display code base report """
+class ReportDataGenerator(object):
+    """ Generates data for a code base report """
 
     def __init__(self, popular_words):
         """
@@ -85,16 +85,24 @@ class CodeBaseReportService(object):
         """
         self._popular_words = popular_words
 
-    def _generate_report_data(self):
+    def generate_report_data(self):
         total_verbs_count = sum(word_occurance for
                                 word, word_occurance in self._popular_words)
         unique_verbs_count = len(self._popular_words)
 
-        return total_verbs_count, unique_verbs_count
+        return total_verbs_count, unique_verbs_count, self._popular_words
+
+
+class CodeBaseReportService(object):
+    """ Display code base report """
+
+    def __init__(self, report_data):
+        self._report_data = report_data
 
     def show_top_verbs_report(self):
-        total_verbs_count, unique_verbs_count = self._generate_report_data()
-        for verb, verb_occurence in self._popular_words:
+        total_verbs_count, unique_verbs_count, popular_words_counter = \
+            self._report_data
+        for verb, verb_occurence in popular_words_counter:
             print('Verb "{0}" occured {1} times'.format(verb, verb_occurence))
         print('Total verbs {0}; unique verbs {1}'.format(total_verbs_count,
                                                          unique_verbs_count))
@@ -117,5 +125,8 @@ if __name__ == '__main__':
                                          args.show_progress)
     popular_words = codebase_analizer.find_top_words(args.top_size)
 
-    codebase_reporter = CodeBaseReportService(popular_words)
+    report_data_generator = ReportDataGenerator(popular_words)
+    report_data = report_data_generator.generate_report_data()
+
+    codebase_reporter = CodeBaseReportService(report_data)
     codebase_reporter.show_top_verbs_report()
