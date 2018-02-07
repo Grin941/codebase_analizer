@@ -1,0 +1,14 @@
+# vim swap files
+*.swo
+*.swp
+**/.cache/
+
+# python compiled
+**/__pycache__/
+*.pyc
+
+# python setup dirs
+**/build
+**/dist
+**/*.egg-info
+**/.eggs
