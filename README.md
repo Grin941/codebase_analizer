@@ -1,5 +1,6 @@
 Code base analizer
 ==================
+[![Build Status](https://travis-ci.org/Grin941/codebase_analizer.svg?branch=master)](https://travis-ci.org/Grin941/codebase_analizer)
 
 Module displays most popular words found in your codebase.
 
