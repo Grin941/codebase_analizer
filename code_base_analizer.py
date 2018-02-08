@@ -56,15 +56,37 @@ class CodeBaseParser(object):
         return self._get_codebase_nodes(codebase_syntax_trees)
 
 
+class TokenNameParser(object):
+    """ Parse token name with regard to files extension.
+    For instase:
+      * python code is written in an undescore case
+        so token_names in a python files should be splitted by '_'
+    """
+
+    def __init__(self, file_extension):
+        self._parse_func = self._get_parse_func(file_extension)
+
+    def __call__(self, token_name):
+        return self._parse_func(token_name)
+
+    def _get_parse_func(self, file_extension):
+        parse_func = lambda token_name: token_name
+        if file_extension == '.py':
+            parse_func = lambda token_name: token_name.split('_')
+        return parse_func
+
+
 class CodeBaseAnalizer(object):
     """ Analize collected codebase data """
 
     def __init__(self, codebase_tokens,
+                 target_files_extension='.py',
                  target_token_type='function',
                  target_part_of_speech='VB'):
         self._codebase_tokens = codebase_tokens
         self._filter_token = TokenTypeFilter(target_token_type)
         self._filer_part_of_speech = PartOfSpeechFilter(target_part_of_speech)
+        self._token_parser = TokenParser(target_files_extension)
 
     def __str__(self):
         return 'Analize codebase tokens {0}'.format(self._codebase_tokens)
@@ -76,7 +98,7 @@ class CodeBaseAnalizer(object):
     def _get_codebase_words(self, codebase_tokens_names):
         for token_name in codebase_tokens_names:
             for word in filter(self._filer_part_of_speech,
-                               token_name.split('_')):
+                               self._token_parser(token_name)):
                 yield word
 
     def _get_top_words(self, words, top_size):
@@ -138,7 +160,7 @@ if __name__ == '__main__':
                                      args.show_progress)
     codebase_tokens = codebase_parser.get_codebase_tokens()
 
-    codebase_analizer = CodeBaseAnalizer(codebase_tokens)
+    codebase_analizer = CodeBaseAnalizer(codebase_tokens, args.ext)
     popular_words = codebase_analizer.find_top_codebase_words(args.top_size)
 
     report_data_generator = ReportDataGenerator(popular_words)
