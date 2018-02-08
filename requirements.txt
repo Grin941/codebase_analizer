@@ -16,3 +16,6 @@ mccabe==0.6.1
 # Vim requirements
 neovim==0.2.1
 jedi==0.11.1
+
+# Python 2/3 compitability
+future==0.16.0; python_version < '3.3'

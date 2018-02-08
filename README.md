@@ -8,7 +8,7 @@ Only verbs in function names are handling in a current version.
 
 ## Requirements
 
-* Python 2.X or 3.X
+* Python 2.7.X or 3.X
 
 ## Installation
 
