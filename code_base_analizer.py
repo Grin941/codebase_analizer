@@ -1,7 +1,6 @@
 import ast
 import os
 import collections
-import nltk
 import argparse
 
 from tqdm import tqdm as progress_bar
@@ -10,17 +9,7 @@ from tqdm import tqdm as progress_bar
 from io import open
 from builtins import object
 
-
-class FilesFilter(object):
-
-    def __init__(self, file_extension):
-        self.filter_func = self._get_filter_func(file_extension)
-
-    def __call__(self, filename):
-        return self.filter_func(filename)
-
-    def _get_filter_func(self, file_extension):
-        return lambda filename: filename.endswith(file_extension)
+from filters import FilesFilter, TokenTypeFilter, PartOfSpeechFilter
 
 
 class CodeBaseParser(object):
@@ -65,41 +54,6 @@ class CodeBaseParser(object):
         codebase_syntax_trees = self._get_syntax_trees(codebase_files)
 
         return self._get_codebase_nodes(codebase_syntax_trees)
-
-
-class TokenTypeFilter(object):
-
-    def __init__(self, token_type):
-        self.filter_func = self._get_filter_func(token_type)
-
-    def __call__(self, token):
-        return self.filter_func(token)
-
-    def _get_filter_func(self, token_type):
-        if token_type == 'function':
-            return lambda token: isinstance(token, ast.FunctionDef) and not \
-                (token.name.startswith('__') and 
-                 token.name.endswith('__'))
-        else: return lambda token: False
-
-
-class PartOfSpeechFilter(object):
-
-    def __init__(self, part_of_speech):
-        self.filter_func = self._get_filter_func(part_of_speech)
-
-    def __call__(self, word):
-        return self.filter_func(word)
-
-    def _get_filter_func(self, part_of_speech):
-        def _is_target_part_of_speech(word=''):
-            if not word:
-                return False
-            pos_info = nltk.pos_tag([word])
-            word_tag = pos_info[0][1]
-            return word_tag.startswith(part_of_speech)
-
-        return _is_target_part_of_speech
 
 
 class CodeBaseAnalizer(object):

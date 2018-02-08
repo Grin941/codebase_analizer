@@ -14,8 +14,7 @@ Only verbs in function names are handling in a current version.
 ## Installation
 
 ```
-$ pip install -r requirements.txt
-$ python setup.py install
+$ make
 ```
 
 ## Usage
