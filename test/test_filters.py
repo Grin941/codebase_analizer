@@ -1,4 +1,3 @@
-import pytest
 import ast
 
 from filters import FilesFilter, TokenTypeFilter, PartOfSpeechFilter
@@ -24,10 +23,12 @@ class TestFilesFilter:
 class TestTokenTypeFilter:
 
     def setup(self):
-        self.function_token = ast.FunctionDef('foo', '', '', '', '')
-        self.magic_function_token = ast.FunctionDef('__bar__', '', '', '', '')
-        self.class_token = ast.ClassDef('tmp', '', '', '', '')
-
+        self.function_token = ast.FunctionDef()
+        setattr(self.function_token, 'name', 'foo')
+        self.magic_function_token = ast.FunctionDef()
+        setattr(self.magic_function_token, 'name', '__bar__')
+        self.class_token = ast.ClassDef()
+        setattr(self.class_token, 'name', 'tmp')
         self.tokens = (self.function_token,
                        self.magic_function_token,
                        self.class_token)
@@ -52,3 +53,26 @@ class TestTokenTypeFilter:
                 filtered_tokens.append(token)
 
         assert not len(filtered_tokens)
+
+
+class TestPartOfSpeechFilter:
+    def setup(self):
+        self.part_of_speech_filter = PartOfSpeechFilter('VB')
+
+    def test_whether_word_is_verb(self):
+        nltk_tags = {
+            'VB': 'go',
+            'VBG': 'focusing',
+            'VBN': 'desired',
+            'NN': 'Fulton',
+            'AT': 'The',
+        }
+
+        for tag, word in nltk_tags.items():
+            if tag.startswith('VB'):
+                assert self.part_of_speech_filter(word)
+            else:
+                assert not self.part_of_speech_filter(word)
+
+    def test_is_verb_returns_false_if_no_word_was_passed(self):
+        assert not self.part_of_speech_filter()

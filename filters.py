@@ -52,7 +52,7 @@ class PartOfSpeechFilter(BaseFilter):
     def __init__(self, part_of_speech):
         super(PartOfSpeechFilter, self).__init__(part_of_speech)
 
-    def __call__(self, word):
+    def __call__(self, word=''):
         return super(PartOfSpeechFilter, self).__call__(word)
 
     def _get_filter_func(self, part_of_speech):
