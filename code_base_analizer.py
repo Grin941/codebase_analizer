@@ -44,12 +44,12 @@ class CodeBaseParser(object):
                 """
                 pass
 
-    def _get_codebase_nodes(self, files_syntax_trees):
+    def _get_codebase_nodes(self, files_syntax_trees):  # pragma: no cover
         for tree in files_syntax_trees:
             for node in tree:
                 yield node
 
-    def get_codebase_tokens(self):
+    def get_codebase_tokens(self):  # pragma: no cover
         codebase_files = self._find_files()
         codebase_syntax_trees = self._get_syntax_trees(codebase_files)
 
@@ -70,10 +70,8 @@ class TokenNameParser(object):
         return self._parse_func(token_name)
 
     def _get_parse_func(self, file_extension):
-        parse_func = lambda token_name: token_name
-        if file_extension == '.py':
-            parse_func = lambda token_name: token_name.split('_')
-        return parse_func
+        ext_parser = {'.py': lambda token_name: token_name.split('_'), }
+        return ext_parser.get(file_extension, lambda token_name: token_name)
 
 
 class CodeBaseAnalizer(object):
@@ -85,8 +83,8 @@ class CodeBaseAnalizer(object):
                  target_part_of_speech='VB'):
         self._codebase_tokens = codebase_tokens
         self._filter_token = TokenTypeFilter(target_token_type)
-        self._filer_part_of_speech = PartOfSpeechFilter(target_part_of_speech)
-        self._token_parser = TokenParser(target_files_extension)
+        self._filter_part_of_speech = PartOfSpeechFilter(target_part_of_speech)
+        self._token_parser = TokenNameParser(target_files_extension)
 
     def __str__(self):
         return 'Analize codebase tokens {0}'.format(self._codebase_tokens)
@@ -97,7 +95,7 @@ class CodeBaseAnalizer(object):
 
     def _get_codebase_words(self, codebase_tokens_names):
         for token_name in codebase_tokens_names:
-            for word in filter(self._filer_part_of_speech,
+            for word in filter(self._filter_part_of_speech,
                                self._token_parser(token_name)):
                 yield word
 
