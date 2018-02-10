@@ -93,7 +93,7 @@ class CodeBaseAnalizer(object):
         for token in filter(self._filter_token, self._codebase_tokens):
             yield token.name.lower()
 
-    def _get_codebase_words(self, codebase_tokens_names):
+    def _get_codebase_words(self, codebase_tokens_names):  # pragma: no cover
         for token_name in codebase_tokens_names:
             for word in filter(self._filter_part_of_speech,
                                self._token_parser(token_name)):
@@ -102,7 +102,7 @@ class CodeBaseAnalizer(object):
     def _get_top_words(self, words, top_size):
         return collections.Counter(words).most_common(top_size)
 
-    def find_top_codebase_words(self, top_size):
+    def find_top_codebase_words(self, top_size):  # pragma: no cover
         codebase_tokens_names = self._get_codebase_tokens_names()
         codebase_words = self._get_codebase_words(codebase_tokens_names)
 
