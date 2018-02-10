@@ -44,6 +44,8 @@ class TokenTypeFilter(BaseFilter):
             return lambda token: isinstance(token, ast.FunctionDef) and not \
                 (token.name.startswith('__') and
                  token.name.endswith('__'))
+        elif token_type == 'variable':
+            return lambda token: isinstance(token, ast.Name)
         else: return lambda token: False
 
 

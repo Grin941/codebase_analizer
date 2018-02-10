@@ -2,6 +2,7 @@ import ast
 import os
 import collections
 import argparse
+import shutil
 
 from tqdm import tqdm as progress_bar
 
@@ -10,6 +11,8 @@ from io import open
 from builtins import object
 
 from filters import FilesFilter, TokenTypeFilter, PartOfSpeechFilter
+from report_generators import StdoutReportGenerator, \
+    CsvReportGenerator, JsonReportGenerator
 
 
 class CodeBaseParser(object):
@@ -91,13 +94,13 @@ class CodeBaseAnalizer(object):
 
     def _get_codebase_tokens_names(self):
         for token in filter(self._filter_token, self._codebase_tokens):
-            yield token.name.lower()
+            yield token.name
 
     def _get_codebase_words(self, codebase_tokens_names):  # pragma: no cover
         for token_name in codebase_tokens_names:
             for word in filter(self._filter_part_of_speech,
                                self._token_parser(token_name)):
-                yield word
+                yield word.lower()
 
     def _get_top_words(self, words, top_size):
         return collections.Counter(words).most_common(top_size)
@@ -119,50 +122,111 @@ class ReportDataGenerator(object):
         self._popular_words = popular_words
 
     def generate_report_data(self):
-        total_verbs_count = sum(word_occurance for
+        total_words_count = sum(word_occurance for
                                 word, word_occurance in self._popular_words)
-        unique_verbs_count = len(self._popular_words)
+        unique_words_count = len(self._popular_words)
 
-        return total_verbs_count, unique_verbs_count, self._popular_words
+        return total_words_count, unique_words_count, self._popular_words
 
 
 class CodeBaseReportService(object):  # pragma: no cover
     """ Display code base report """
 
-    def __init__(self, report_data):
-        self._report_data = report_data
+    report_generator_factory = {
+        'stdout': StdoutReportGenerator,
+        'csv': CsvReportGenerator,
+        'json': JsonReportGenerator,
+    }
 
-    def show_top_verbs_report(self):
-        total_verbs_count, unique_verbs_count, popular_words_counter = \
-            self._report_data
-        for verb, verb_occurence in popular_words_counter:
-            print('Verb "{0}" occured {1} times'.format(verb, verb_occurence))
-        print('Total verbs {0}; unique verbs {1}'.format(total_verbs_count,
-                                                         unique_verbs_count))
+    def __init__(self, report_data, report_format):
+        self._report_data = report_data
+        self._report_generator = \
+            self.report_generator_factory.get(
+                report_format, StdoutReportGenerator)(report_format)
+
+    def show_top_words_report(self):
+        self._report_generator.generate_report(self._report_data)
+
+
+class OpenProject(object):
+
+    def __init__(self, project_location):
+        self.clone_repo = self._is_url(project_location)
+        self.project_path = self.get_project_path(project_location)
+
+    @staticmethod
+    def _is_url(project_location):
+        return project_location.startswith('http')
+
+    def _get_project_name(self, project_location):
+        project_name = project_location.split('/')[-1]
+        if self.clone_repo:
+            # Truncate .git postfix
+            project_name = project_name.split('.')[0]
+        return project_name
+
+    def get_project_path(self, project_location):
+        if self.clone_repo:
+            # Clone the repo and return project_path
+            os.system('git clone {0}'.format(project_location))
+            project_name = self._get_project_name(project_location)
+            return os.path.join(os.getcwd(), project_name)
+        return project_location
+
+    def __enter__(self):
+        return self.project_path
+
+    def __exit__(self, exc_type, exc_value, traceback):
+        if self.clone_repo:
+            shutil.rmtree(self.project_path)
 
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(
         description='Find most popular words in your codebase.')
-    parser.add_argument('path', type=str,
-                        help='root path of your project')
-    parser.add_argument('--ext', type=str, default='.py',
-                        help='files extension you want to analize')
+    parser.add_argument('project_location', type=str,
+                        help="""root path of your project or
+                                url to clone the repo from""")
+    parser.add_argument('--files-ext', default='.py', const='.py',
+                        nargs='?', choices=['.py', ],
+                        help="""files extension you want to analize
+                                (default: %(default)s)""")
+    parser.add_argument('--token-type', default='function', const='function',
+                        nargs='?', choices=['function', 'variable'],
+                        help="""what token type do you want to analize:
+                                function or variable
+                                (default: %(default)s)?""")
+    parser.add_argument('--part-of-speech', default='VB', const='VB',
+                        nargs='?', choices=['VB', 'NN'],
+                        help="""what type of speech do you want to analize:
+                                verb or noun
+                                (default: %(default)s)?""")
+    parser.add_argument('--report-format', default='stdout', const='stdout',
+                        nargs='?', choices=['stdout', 'csv', 'json'],
+                        help="""how do you want to see your report:
+                                print to stdout or generate json/scv file
+                                (default: %(default)s)?""")
     parser.add_argument('--top-size', type=int, default=10,
-                        help='how long top list would you like to see?')
+                        help="""how long top list would you like to see
+                                (default: %(default)s)?""")
     parser.add_argument('--show-progress', action='store_true',
                         help='do you want to see progress bar?')
     args = parser.parse_args()
 
-    codebase_parser = CodeBaseParser(args.path, args.ext,
-                                     args.show_progress)
-    codebase_tokens = codebase_parser.get_codebase_tokens()
+    with OpenProject(args.project_location) as project_path:
+        codebase_parser = CodeBaseParser(project_path, args.files_ext,
+                                         args.show_progress)
+        codebase_tokens = codebase_parser.get_codebase_tokens()
 
-    codebase_analizer = CodeBaseAnalizer(codebase_tokens, args.ext)
-    popular_words = codebase_analizer.find_top_codebase_words(args.top_size)
+        codebase_analizer = CodeBaseAnalizer(codebase_tokens, args.files_ext,
+                                             args.token_type,
+                                             args.part_of_speech)
+        popular_words = codebase_analizer.find_top_codebase_words(
+            args.top_size)
 
-    report_data_generator = ReportDataGenerator(popular_words)
-    report_data = report_data_generator.generate_report_data()
+        report_data_generator = ReportDataGenerator(popular_words)
+        report_data = report_data_generator.generate_report_data()
 
-    codebase_reporter = CodeBaseReportService(report_data)
-    codebase_reporter.show_top_verbs_report()
+        codebase_reporter = CodeBaseReportService(report_data,
+                                                  args.report_format)
+        codebase_reporter.show_top_words_report()

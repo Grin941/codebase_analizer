@@ -5,8 +5,6 @@ Code base analizer
 
 Module displays most popular words found in your codebase.
 
-Only verbs in function names are handling in a current version.
-
 ## Requirements
 
 * Python 2.7.X or 3.X

@@ -1,7 +1,7 @@
 from setuptools import setup, find_packages
 from setuptools.command.install import install as _install
 
-__version__ = '0.1.0'
+__version__ = '0.2.0'
 
 
 class NLTKInstall(_install):

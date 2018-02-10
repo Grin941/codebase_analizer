@@ -14,14 +14,14 @@ class TestCodebaseAnalizer:
         self.codebase_analizer = CodeBaseAnalizer([function_token,
                                                    class_token])
 
-    def test_get_codebase_token_names_returns_lowercased_token_names(self, monkeypatch):
+    def test_get_codebase_token_names_returns_token_names(self, monkeypatch):
         def monkey_token_filter(token_name):
             return lambda token_name: True
         monkeypatch.setattr(self.codebase_analizer, '_filter_token',
                             monkey_token_filter)
 
         assert set(self.codebase_analizer._get_codebase_tokens_names()) == \
-            {'foo_bar', 'testmyself'}
+            {'foo_bar', 'TestMySelf'}
 
     def test_get_top_words(self):
         assert set(self.codebase_analizer._get_top_words(['one',
