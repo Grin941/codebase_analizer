@@ -18,7 +18,7 @@ $ make
 ## Usage
 
 ```
-$ python code_base_analizer.py your_project_path
+$ python code_base_analizer.py your_project_path/url_to_clone_repo_from
 ```
 
 For more information type: ```$ python code_base_analizer.py -h```
