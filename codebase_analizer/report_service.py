@@ -1,7 +1,7 @@
 # Python 2/3 compatibility
 from builtins import object
 
-from report_generators import StdoutReportGenerator, \
+from .report_generators import StdoutReportGenerator, \
     CsvReportGenerator, JsonReportGenerator
 
 

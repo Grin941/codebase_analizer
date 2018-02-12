@@ -7,7 +7,7 @@ from tqdm import tqdm as progress_bar
 from io import open
 from builtins import object
 
-from filters import FilesFilter
+from .filters import FilesFilter
 
 
 class CodeBaseParser(object):

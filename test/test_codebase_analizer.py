@@ -1,6 +1,6 @@
 import ast
 
-from analizer import CodeBaseAnalizer
+from codebase_analizer.analizer import CodeBaseAnalizer
 
 
 class TestCodebaseAnalizer:

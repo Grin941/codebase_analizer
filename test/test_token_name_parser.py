@@ -1,4 +1,4 @@
-from parsers import TokenNameParser
+from codebase_analizer.parsers import TokenNameParser
 
 
 class TestTokenNameParser:

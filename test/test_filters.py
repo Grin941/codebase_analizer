@@ -1,6 +1,6 @@
 import ast
 
-from filters import FilesFilter, TokenTypeFilter, PartOfSpeechFilter
+from codebase_analizer.filters import FilesFilter, TokenTypeFilter, PartOfSpeechFilter
 
 
 class TestFilesFilter:

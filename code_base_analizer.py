@@ -1,8 +1,9 @@
 import argparse
 
-from parsers import CodeBaseParser
-from report_service import CodeBaseReportService, ReportDataGenerator
-from analizer import CodeBaseAnalizer, OpenProject
+from codebase_analizer.parsers import CodeBaseParser
+from codebase_analizer.report_service import CodeBaseReportService, \
+    ReportDataGenerator
+from codebase_analizer.analizer import CodeBaseAnalizer, OpenProject
 
 
 if __name__ == '__main__':

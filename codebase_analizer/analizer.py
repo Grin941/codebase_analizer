@@ -5,8 +5,8 @@ import shutil
 # Python 2/3 compatibility
 from builtins import object
 
-from filters import TokenTypeFilter, PartOfSpeechFilter
-from parsers import TokenNameParser
+from .filters import TokenTypeFilter, PartOfSpeechFilter
+from .parsers import TokenNameParser
 
 
 class CodeBaseAnalizer(object):
