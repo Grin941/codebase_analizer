@@ -1,4 +1,4 @@
-from code_base_analizer import ReportDataGenerator
+from report_service import ReportDataGenerator
 
 
 class TestReportDataGenerator:

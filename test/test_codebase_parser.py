@@ -1,7 +1,7 @@
 import os
 import pytest
 
-from code_base_analizer import CodeBaseParser
+from parsers import CodeBaseParser
 
 
 class TestCodebaseParser:
