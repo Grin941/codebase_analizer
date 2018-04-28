@@ -45,6 +45,17 @@ class CodeBaseAnalizer(object):
 
 
 class OpenProject(object):
+    """
+    OpenProject class receives the path of the project
+    that should be opened and analized.
+    If the project path is an url, repo would be cloned and removed afterall.
+    OpenProject is a context manager:
+      * Project path
+        (whether cloned if project_location is an url
+         or one passed to the class)
+        is returned during __enter__
+      * Project directory is removed during __exit__ if a project was cloned
+    """
 
     def __init__(self, project_location):
         self.clone_repo = self._is_url(project_location)
