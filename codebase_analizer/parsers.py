@@ -24,7 +24,7 @@ class CodeBaseParser(object):
     def _find_files(self):
         for dirpath, dirnames, filenames in \
                 self._show_progress(os.walk(self._path)):
-            for filename in filter(self._filter_files, filenames):
+            for filename in self._filter_files(filenames):
                 yield os.path.join(dirpath, filename)
 
     @staticmethod

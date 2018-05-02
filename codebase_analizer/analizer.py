@@ -25,13 +25,13 @@ class CodeBaseAnalizer(object):
         return 'Analize codebase tokens {0}'.format(self._codebase_tokens)
 
     def _get_codebase_tokens_names(self):
-        for token in filter(self._filter_token, self._codebase_tokens):
+        for token in self._filter_token(self._codebase_tokens):
             yield token.name
 
     def _get_codebase_words(self, codebase_tokens_names):  # pragma: no cover
         for token_name in codebase_tokens_names:
-            for word in filter(self._filter_part_of_speech,
-                               self._token_parser(token_name)):
+            parsed_tokens = self._token_parser(token_name)
+            for word in self._filter_part_of_speech(parsed_tokens):
                 yield word.lower()
 
     def _get_top_words(self, words, top_size):

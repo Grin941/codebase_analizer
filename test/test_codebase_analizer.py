@@ -15,8 +15,8 @@ class TestCodebaseAnalizer:
                                                    class_token])
 
     def test_get_codebase_token_names_returns_token_names(self, monkeypatch):
-        def monkey_token_filter(token_name):
-            return lambda token_name: True
+        def monkey_token_filter(token_names):
+            return filter(lambda token_name: True, token_names)
         monkeypatch.setattr(self.codebase_analizer, '_filter_token',
                             monkey_token_filter)
 

@@ -12,8 +12,8 @@ class BaseFilter(object):
     def __init__(self, *args, **kwargs):
         self.filter_func = self._get_filter_func(*args, **kwargs)
 
-    def __call__(self, *args, **kwargs):
-        return self.filter_func(*args, **kwargs)
+    def __call__(self, iterable):
+        return filter(self.filter_func, iterable)
 
     def _get_filter_func(self, *args, **kwargs):
         raise NotImplementedError('To be implemented')
@@ -24,8 +24,8 @@ class FilesFilter(BaseFilter):
     def __init__(self, file_extension):
         super(FilesFilter, self).__init__(file_extension)
 
-    def __call__(self, filename):
-        return super(FilesFilter, self).__call__(filename)
+    def __call__(self, filenames):
+        return super(FilesFilter, self).__call__(filenames)
 
     def _get_filter_func(self, file_extension):
         return lambda filename: filename.endswith(file_extension)
@@ -36,8 +36,8 @@ class TokenTypeFilter(BaseFilter):
     def __init__(self, token_type):
         super(TokenTypeFilter, self).__init__(token_type)
 
-    def __call__(self, token):
-        return super(TokenTypeFilter, self).__call__(token)
+    def __call__(self, tokens):
+        return super(TokenTypeFilter, self).__call__(tokens)
 
     def _get_filter_func(self, token_type):
         if token_type == 'function':
@@ -54,8 +54,8 @@ class PartOfSpeechFilter(BaseFilter):
     def __init__(self, part_of_speech):
         super(PartOfSpeechFilter, self).__init__(part_of_speech)
 
-    def __call__(self, word=''):
-        return super(PartOfSpeechFilter, self).__call__(word)
+    def __call__(self, words=[]):
+        return super(PartOfSpeechFilter, self).__call__(words)
 
     def _get_filter_func(self, part_of_speech):
         def _is_target_part_of_speech(word=''):

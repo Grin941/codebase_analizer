@@ -1,8 +1,15 @@
+import collections
+
 # Python 2/3 compatibility
 from builtins import object
 
 from .report_generators import StdoutReportGenerator, \
     CsvReportGenerator, JsonReportGenerator
+
+
+ReportData = collections.namedtuple(
+    'ReportData', ['total_words_count', 'unique_words_count', 'popular_words']
+)
 
 
 class ReportDataGenerator(object):
@@ -19,7 +26,9 @@ class ReportDataGenerator(object):
                                 word, word_occurance in self._popular_words)
         unique_words_count = len(self._popular_words)
 
-        return total_words_count, unique_words_count, self._popular_words
+        return ReportData(
+            total_words_count, unique_words_count, self._popular_words
+        )
 
 
 class CodeBaseReportService(object):  # pragma: no cover

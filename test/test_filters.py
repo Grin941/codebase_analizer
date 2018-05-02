@@ -11,9 +11,8 @@ class TestFilesFilter:
         files = ('foo.py', 'bar.py', 'tmp.md', 'abrakadabra')
 
         filtered_files = []
-        for _file in files:
-            if self.files_filter(_file):
-                filtered_files.append(_file)
+        for _file in self.files_filter(files):
+            filtered_files.append(_file)
 
         assert len(list(
             filter(lambda _file: _file.endswith('.py'), files)
@@ -37,9 +36,8 @@ class TestTokenTypeFilter:
         token_type_filter = TokenTypeFilter('function')
 
         filtered_tokens = []
-        for token in self.tokens:
-            if token_type_filter(token):
-                filtered_tokens.append(token)
+        for token in token_type_filter(self.tokens):
+            filtered_tokens.append(token)
 
         assert len(filtered_tokens) == 1 and \
             filtered_tokens[0] == self.function_token
@@ -48,9 +46,8 @@ class TestTokenTypeFilter:
         token_type_filter = TokenTypeFilter('class')
 
         filtered_tokens = []
-        for token in self.tokens:
-            if token_type_filter(token):
-                filtered_tokens.append(token)
+        for token in token_type_filter(self.tokens):
+            filtered_tokens.append(token)
 
         assert not len(filtered_tokens)
 
@@ -70,9 +67,9 @@ class TestPartOfSpeechFilter:
 
         for tag, word in nltk_tags.items():
             if tag.startswith('VB'):
-                assert self.part_of_speech_filter(word)
+                assert len(list(self.part_of_speech_filter([word])))
             else:
-                assert not self.part_of_speech_filter(word)
+                assert not len(list(self.part_of_speech_filter([word])))
 
     def test_is_verb_returns_false_if_no_word_was_passed(self):
-        assert not self.part_of_speech_filter()
+        assert not len(list(self.part_of_speech_filter()))

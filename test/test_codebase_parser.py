@@ -20,8 +20,8 @@ class TestCodebaseParser:
             ]
         monkeypatch.setattr(os, "walk", monkey_os_walk)
 
-        def monkey_files_filter(_file):
-            return lambda x: True
+        def monkey_files_filter(_files):
+            return filter(lambda x: True, _files)
         monkeypatch.setattr(self.codebase_analizer, '_filter_files',
                             monkey_files_filter)
 
