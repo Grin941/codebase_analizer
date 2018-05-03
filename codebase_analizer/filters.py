@@ -8,6 +8,13 @@ __all__ = ['FilesFilter', 'TokenTypeFilter', 'PartOfSpeechFilter']
 
 
 class BaseFilter(object):
+    """
+    Filter is a callable class.
+    It is a Factory of different filters.
+    When one is called with some iterable passed
+    it works as a built-in filter()
+    applying a function returned by the factory to the iterable.
+    """
 
     def __init__(self, *args, **kwargs):
         self.filter_func = self._get_filter_func(*args, **kwargs)
@@ -20,6 +27,9 @@ class BaseFilter(object):
 
 
 class FilesFilter(BaseFilter):
+    """
+    Filter filenames
+    """
 
     def __init__(self, file_extension):
         super(FilesFilter, self).__init__(file_extension)
@@ -32,6 +42,9 @@ class FilesFilter(BaseFilter):
 
 
 class TokenTypeFilter(BaseFilter):
+    """
+    Filter tokens by types (function, variable, etc)
+    """
 
     def __init__(self, token_type):
         super(TokenTypeFilter, self).__init__(token_type)
@@ -50,6 +63,10 @@ class TokenTypeFilter(BaseFilter):
 
 
 class PartOfSpeechFilter(BaseFilter):
+    """
+    Filter words by part of speech
+    (VB, NN, etc)
+    """
 
     def __init__(self, part_of_speech):
         super(PartOfSpeechFilter, self).__init__(part_of_speech)

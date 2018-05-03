@@ -62,7 +62,7 @@ class CodeBaseParser(object):
 
 class TokenNameParser(object):
     """ Parse token name with regard to files extension.
-    For instase:
+    For instance:
       * python code is written in an undescore case
         so token_names in a python files should be splitted by '_'
     """

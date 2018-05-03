@@ -9,6 +9,9 @@ __all__ = ['StdoutReportGenerator',
 
 
 class ReportGenerator(object):
+    """
+    ReportGenerator outputs report_data passed in a specific format
+    """
 
     def __init__(self, report_format):
         home_dir = os.path.expanduser('~')
@@ -16,10 +19,20 @@ class ReportGenerator(object):
             home_dir, 'codebase_report.{0}'.format(report_format))
 
     def generate_report(self, report_data):
+        """
+        :param report_data: collections.namedtuple(
+            'ReportData',
+            ['total_words_count', 'unique_words_count', 'popular_words']
+         )
+
+        """
         raise NotImplementedError('Should be implemented')
 
 
 class StdoutReportGenerator(ReportGenerator):
+    """
+    Print report to the stdout
+    """
 
     def generate_report(self, report_data):
         total_words_count, unique_words_count, \
@@ -31,6 +44,9 @@ class StdoutReportGenerator(ReportGenerator):
 
 
 class CsvReportGenerator(ReportGenerator):
+    """
+    Generate CSV report file
+    """
 
     def generate_report(self, report_data):
         with open(self._report_file, 'w', encoding='utf-8') as csvfile:
@@ -53,6 +69,9 @@ class CsvReportGenerator(ReportGenerator):
 
 
 class JsonReportGenerator(ReportGenerator):
+    """
+    Generate report as .json file
+    """
 
     def generate_report(self, report_data):
         with open(self._report_file, 'w', encoding='utf-8') as jsonfile:
