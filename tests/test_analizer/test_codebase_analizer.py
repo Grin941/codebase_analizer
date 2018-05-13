@@ -1,22 +1,3 @@
-import ast
-import pytest
-
-from codebase_analizer.analizer import CodeBaseAnalizer
-
-
-@pytest.fixture
-def codebase_tokens_analizer():
-    function_token = ast.FunctionDef()
-    setattr(function_token, 'name', 'foo_bar')
-
-    class_token = ast.ClassDef()
-    setattr(class_token, 'name', 'TestMySelf')
-
-    return CodeBaseAnalizer(
-        [function_token, class_token]
-    )
-
-
 def test_get_codebase_token_names_returns_token_names(
         codebase_tokens_analizer, monkeypatch
 ):

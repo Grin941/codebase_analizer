@@ -1,39 +1,4 @@
-import ast
-import pytest
-import collections
-
-from codebase_analizer.filters import \
-    FilesFilter, TokenTypeFilter, PartOfSpeechFilter
-
-
-@pytest.fixture
-def files_filter():
-    return FilesFilter('.py')
-
-
-@pytest.fixture
-def token_types():
-    function_token = ast.FunctionDef()
-    setattr(function_token, 'name', 'foo')
-    magic_function_token = ast.FunctionDef()
-    setattr(magic_function_token, 'name', '__bar__')
-    class_token = ast.ClassDef()
-    setattr(class_token, 'name', 'tmp')
-
-    Tokens = collections.namedtuple(
-        'Tokens', ['function_token', 'magic_function_token', 'class_token']
-    )
-
-    return Tokens(
-        function_token,
-        magic_function_token,
-        class_token
-    )
-
-
-@pytest.fixture
-def part_of_speech_filter():
-    return PartOfSpeechFilter('VB')
+from codebase_analizer.filters import TokenTypeFilter
 
 
 def test_files_filter_returns_files_with_specific_extensions(files_filter):

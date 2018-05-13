@@ -39,4 +39,7 @@ setup(
         'Programming Language :: Python :: Implementation :: CPython',
         'Topic :: Utilities',
     ],
+    entry_points={
+        'console_scripts': ['codebase_analizer=codebase_analizer.main:run']
+    },
 )

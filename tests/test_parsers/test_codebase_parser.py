@@ -1,12 +1,4 @@
 import os
-import pytest
-
-from codebase_analizer.parsers import CodeBaseParser
-
-
-@pytest.fixture
-def codebase_parser():
-    return CodeBaseParser('')
 
 
 def test_files_finder_dont_fail_on_unexisting_path(codebase_parser):
