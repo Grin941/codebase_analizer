@@ -36,11 +36,14 @@ def _get_top_words(words, top_size):
 
 
 def find_top_codebase_words(
-    codebase_tokens, top_size, **user_settings
+    codebase_tokens, **user_settings
 ):  # pragma: no cover
+    top_size = user_settings.get('top_size', 10)
     codebase_tokens_names = _get_codebase_tokens_names(
-        codebase_tokens, user_settings
+        codebase_tokens, **user_settings
     )
-    codebase_words = _get_codebase_words(codebase_tokens_names, user_settings)
+    codebase_words = _get_codebase_words(
+        codebase_tokens_names, **user_settings
+    )
 
     return _get_top_words(codebase_words, top_size)

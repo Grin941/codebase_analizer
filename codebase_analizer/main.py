@@ -1,9 +1,9 @@
 import argparse
 
-from .parsers import CodeBaseParser
+from codebase_analizer import parsers as codebase_parser
 from .report_service import CodeBaseReportService, \
     ReportDataGenerator
-from .analizer import CodeBaseAnalizer
+from codebase_analizer import analizer as codebase_analizer
 from .project import Project
 
 
@@ -39,21 +39,20 @@ parser.add_argument('--show-progress', action='store_true',
 
 
 def run():  # pragma: no cover
-    args = parser.parse_args()
+    user_settings = parser.parse_args()
 
-    project = Project(args.project_location)
+    project = Project(user_settings.project_location)
     if project.should_be_clonned:
         project.clone()
 
-    codebase_parser = CodeBaseParser(project.path, args.files_ext,
-                                     args.show_progress)
-    codebase_tokens = codebase_parser.get_codebase_tokens()
-
-    codebase_analizer = CodeBaseAnalizer(codebase_tokens, args.files_ext,
-                                         args.token_type,
-                                         args.part_of_speech)
+    codebase_tokens = codebase_parser.get_codebase_tokens(
+        project.path,
+        **user_settings
+    )
     popular_words = codebase_analizer.find_top_codebase_words(
-        args.top_size)
+        codebase_tokens,
+        **user_settings
+    )
 
     report_data_generator = ReportDataGenerator(popular_words)
     report_data = report_data_generator.generate_report_data()

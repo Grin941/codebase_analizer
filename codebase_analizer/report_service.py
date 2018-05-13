@@ -12,23 +12,14 @@ ReportData = collections.namedtuple(
 )
 
 
-class ReportDataGenerator(object):
-    """ Generates data for a code base report """
+def generate_report_data(popular_words):
+    total_words_count = sum(word_occurance for
+                            word, word_occurance in popular_words)
+    unique_words_count = len(popular_words)
 
-    def __init__(self, popular_words):
-        """
-        :param popular_words: collections.Counter object
-        """
-        self._popular_words = popular_words
-
-    def generate_report_data(self):
-        total_words_count = sum(word_occurance for
-                                word, word_occurance in self._popular_words)
-        unique_words_count = len(self._popular_words)
-
-        return ReportData(
-            total_words_count, unique_words_count, self._popular_words
-        )
+    return ReportData(
+        total_words_count, unique_words_count, popular_words
+    )
 
 
 class CodeBaseReportService(object):  # pragma: no cover
