@@ -28,12 +28,13 @@ class Project(object):
             return os.path.join(os.getcwd(), self.name)
         return self._project_location
 
-    def clone_repo(self):
+    def clone(self):
         assert self.should_be_clonned
         os.system('git clone {repo_url} {directory}'.format(
-            self._project_location,
-            self.path
+            repo_url=self._project_location,
+            directory=self.path
         ))
 
     def remove(self):
-        shutil.rmtree(self.path)
+        print(self.path)
+        #shutil.rmtree(self.path)
