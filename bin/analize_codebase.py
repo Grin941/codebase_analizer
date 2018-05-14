@@ -44,26 +44,20 @@ def main():  # pragma: no cover
     user_settings = parse_user_settings()
 
     project = Project(user_settings.project_location)
-    if project.should_be_clonned:
-        project.clone()
 
-    codebase_tokens = codebase_parser.get_codebase_tokens(
-        project.path,
-        user_settings
-    )
-    popular_words = codebase_analizer.find_top_codebase_words(
-        codebase_tokens,
-        user_settings
-    )
-    report_service.show_top_words_report(
-        popular_words,
-        user_settings
-    )
-
-    if project.should_be_clonned:
-        # Remove clonned project -
-        # user should not store folders he don't know about.
-        project.remove()
+    with project.open() as project_path:
+        codebase_tokens = codebase_parser.get_codebase_tokens(
+            project_path,
+            user_settings
+        )
+        popular_words = codebase_analizer.find_top_codebase_words(
+            codebase_tokens,
+            user_settings
+        )
+        report_service.show_top_words_report(
+            popular_words,
+            user_settings
+        )
 
 
 if __name__ == '__main__':
