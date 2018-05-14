@@ -1,4 +1,5 @@
 import os
+from codebase_analizer import parser as codebase_parser
 
 
 def test_files_finder_dont_fail_on_unexisting_path(codebase_parser):
