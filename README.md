@@ -19,10 +19,10 @@ $ make
 ## Usage
 
 ```
-$ codebase_analizer your_project_path/url_to_clone_repo_from
+$ analize_codebase your_project_path/url_to_clone_repo_from
 ```
 
-For more information type: ```$ codebase_analizer -h```
+For more information type: ```$ analize_codebase -h```
 
 ## Testing
 ```

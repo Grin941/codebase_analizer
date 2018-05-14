@@ -1,13 +1,9 @@
-from codebase_analizer.parsers import TokenNameParser
+from codebase_analizer import parser
 
 
 def test_token_name_parser_splits_tokens_by_undescore_for_py_files():
-    token_name_parser = TokenNameParser('.py')
-
-    assert set(token_name_parser('foo_bar')) == {'foo', 'bar'}
+    assert set(parser.parse_token_name('.py', 'foo_bar')) == {'foo', 'bar'}
 
 
 def test_token_name_parser_returns_token_name_for_not_py_files():
-    token_name_parser = TokenNameParser('.js')
-
-    assert token_name_parser('foo_bar') == 'foo_bar'
+    assert parser.parse_token_name('.js', 'foo_bar') == 'foo_bar'
