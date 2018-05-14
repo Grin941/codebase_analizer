@@ -1,12 +1,13 @@
 import argparse
 
-from codebase_analizer.parsers import CodeBaseParser
-from codebase_analizer.report_service import CodeBaseReportService, \
-    ReportDataGenerator
-from codebase_analizer.analizer import CodeBaseAnalizer, OpenProject
+from codebase_analizer import \
+    Project, \
+    codebase_parser, \
+    codebase_analizer, \
+    report_service
 
 
-if __name__ == '__main__':
+def parse_user_settings():
     parser = argparse.ArgumentParser(
         description='Find most popular words in your codebase.')
     parser.add_argument('project_location', type=str,
@@ -34,24 +35,30 @@ if __name__ == '__main__':
     parser.add_argument('--top-size', type=int, default=10,
                         help="""how long top list would you like to see
                                 (default: %(default)s)?""")
-    parser.add_argument('--show-progress', action='store_true',
+    parser.add_argument('--show-progress', action='store_false',
                         help='do you want to see progress bar?')
-    args = parser.parse_args()
+    return parser.parse_args()
 
-    with OpenProject(args.project_location) as project_path:
-        codebase_parser = CodeBaseParser(project_path, args.files_ext,
-                                         args.show_progress)
-        codebase_tokens = codebase_parser.get_codebase_tokens()
 
-        codebase_analizer = CodeBaseAnalizer(codebase_tokens, args.files_ext,
-                                             args.token_type,
-                                             args.part_of_speech)
+def main():  # pragma: no cover
+    user_settings = parse_user_settings()
+
+    project = Project(user_settings.project_location)
+
+    with project.open() as project_path:
+        codebase_tokens = codebase_parser.get_codebase_tokens(
+            project_path,
+            user_settings
+        )
         popular_words = codebase_analizer.find_top_codebase_words(
-            args.top_size)
+            codebase_tokens,
+            user_settings
+        )
+        report_service.show_top_words_report(
+            popular_words,
+            user_settings
+        )
 
-        report_data_generator = ReportDataGenerator(popular_words)
-        report_data = report_data_generator.generate_report_data()
 
-        codebase_reporter = CodeBaseReportService(report_data,
-                                                  args.report_format)
-        codebase_reporter.show_top_words_report()
+if __name__ == '__main__':
+    main()

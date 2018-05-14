@@ -1,7 +1,7 @@
 from setuptools import setup, find_packages
 from setuptools.command.install import install as _install
 
-__version__ = '0.3.0'
+__version__ = '0.4.0'
 
 
 class NLTKInstall(_install):
@@ -39,4 +39,7 @@ setup(
         'Programming Language :: Python :: Implementation :: CPython',
         'Topic :: Utilities',
     ],
+    entry_points={
+        'console_scripts': ['analize_codebase=bin.analize_codebase:main']
+    },
 )

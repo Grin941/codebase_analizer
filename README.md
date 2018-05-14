@@ -19,10 +19,10 @@ $ make
 ## Usage
 
 ```
-$ python codebase_analizer.py your_project_path/url_to_clone_repo_from
+$ analize_codebase your_project_path/url_to_clone_repo_from
 ```
 
-For more information type: ```$ python codebase_analizer.py -h```
+For more information type: ```$ analize_codebase -h```
 
 ## Testing
 ```

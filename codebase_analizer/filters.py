@@ -1,85 +1,47 @@
 import ast
 import nltk
 
-# Python 2/3 compatibility
-from builtins import object
 
-__all__ = ['FilesFilter', 'TokenTypeFilter', 'PartOfSpeechFilter']
-
-
-class BaseFilter(object):
-    """
-    Filter is a callable class.
-    It is a Factory of different filters.
-    When one is called with some iterable passed
-    it works as a built-in filter()
-    applying a function returned by the factory to the iterable.
-    """
-
-    def __init__(self, *args, **kwargs):
-        self.filter_func = self._get_filter_func(*args, **kwargs)
-
-    def __call__(self, iterable):
-        return filter(self.filter_func, iterable)
-
-    def _get_filter_func(self, *args, **kwargs):
-        raise NotImplementedError('To be implemented')
+def apply_filter(filter_factory):
+    def filtered_iterable(filter_attr, iterable=[]):
+        filter_func = filter_factory(filter_attr, iterable)
+        return filter(filter_func, iterable)
+    return filtered_iterable
 
 
-class FilesFilter(BaseFilter):
+@apply_filter
+def filter_files_by_ext(files_ext, filenames):
     """
     Filter filenames
     """
-
-    def __init__(self, file_extension):
-        super(FilesFilter, self).__init__(file_extension)
-
-    def __call__(self, filenames):
-        return super(FilesFilter, self).__call__(filenames)
-
-    def _get_filter_func(self, file_extension):
-        return lambda filename: filename.endswith(file_extension)
+    return lambda filename: filename.endswith(files_ext)
 
 
-class TokenTypeFilter(BaseFilter):
+@apply_filter
+def filter_token_by_type(token_type, tokens):
     """
     Filter tokens by types (function, variable, etc)
     """
-
-    def __init__(self, token_type):
-        super(TokenTypeFilter, self).__init__(token_type)
-
-    def __call__(self, tokens):
-        return super(TokenTypeFilter, self).__call__(tokens)
-
-    def _get_filter_func(self, token_type):
-        if token_type == 'function':
-            return lambda token: isinstance(token, ast.FunctionDef) and not \
-                (token.name.startswith('__') and
-                 token.name.endswith('__'))
-        elif token_type == 'variable':
-            return lambda token: isinstance(token, ast.Name)
-        else: return lambda token: False
+    if token_type == 'function':
+        return lambda token: isinstance(token, ast.FunctionDef) and not \
+            (token.name.startswith('__') and
+             token.name.endswith('__'))
+    elif token_type == 'variable':
+        return lambda token: isinstance(token, ast.Name)
+    else: return lambda token: False
 
 
-class PartOfSpeechFilter(BaseFilter):
+@apply_filter
+def filter_words_by_part_of_speech(part_of_speech, words=[]):
     """
     Filter words by part of speech
     (VB, NN, etc)
     """
+    def _is_target_part_of_speech(word=''):
+        if not word:
+            return False
+        pos_info = nltk.pos_tag([word])
+        word_tag = pos_info[0][1]
+        return word_tag.startswith(part_of_speech)
 
-    def __init__(self, part_of_speech):
-        super(PartOfSpeechFilter, self).__init__(part_of_speech)
-
-    def __call__(self, words=[]):
-        return super(PartOfSpeechFilter, self).__call__(words)
-
-    def _get_filter_func(self, part_of_speech):
-        def _is_target_part_of_speech(word=''):
-            if not word:
-                return False
-            pos_info = nltk.pos_tag([word])
-            word_tag = pos_info[0][1]
-            return word_tag.startswith(part_of_speech)
-
-        return _is_target_part_of_speech
+    return _is_target_part_of_speech
