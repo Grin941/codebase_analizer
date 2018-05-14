@@ -38,13 +38,12 @@ class Project(object):
         """
         if self.should_be_clonned:
             self._clone()
-
-        yield self.path
-
-        if self.should_be_clonned:
+            yield self.path
             # Remove clonned project -
             # user should not store folders he don't know about.
             self._remove()
+        else:
+            yield self.path
 
     def _clone(self):
         assert self.should_be_clonned

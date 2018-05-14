@@ -3,7 +3,7 @@ import nltk
 
 
 def apply_filter(filter_factory):
-    def filtered_iterable(filter_attr, iterable):
+    def filtered_iterable(filter_attr, iterable=[]):
         filter_func = filter_factory(filter_attr, iterable)
         return filter(filter_func, iterable)
     return filtered_iterable

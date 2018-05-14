@@ -2,14 +2,6 @@ import ast
 import pytest
 import collections
 
-from codebase_analizer.filters import \
-    FilesFilter, PartOfSpeechFilter
-
-
-@pytest.fixture(scope='module')
-def files_filter():
-    return FilesFilter('.py')
-
 
 @pytest.fixture(scope='module')
 def token_types():
@@ -29,8 +21,3 @@ def token_types():
         magic_function_token,
         class_token
     )
-
-
-@pytest.fixture(scope='module')
-def part_of_speech_filter():
-    return PartOfSpeechFilter('VB')
