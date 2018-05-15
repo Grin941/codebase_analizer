@@ -24,6 +24,8 @@ $ analize_codebase your_project_path/url_to_clone_repo_from
 
 For more information type: ```$ analize_codebase -h```
 
+![ScreenShot](http://drive.google.com/uc?export=view&id=1Otyn9Y8Fum3emdwMGnUOA7Te89oT8uV6)
+
 ## Testing
 ```
 $ PYTHONPATH=. pytest
