@@ -1,17 +1,15 @@
 import collections
 
-from .report_generators import StdoutReportGenerator, \
-    CsvReportGenerator, JsonReportGenerator
-
+from codebase_analizer import report_generators
 
 ReportData = collections.namedtuple(
     'ReportData', ['total_words_count', 'unique_words_count', 'popular_words']
 )
 
 REPORT_GENERATOR_FACTORY = {
-    'stdout': StdoutReportGenerator,
-    'csv': CsvReportGenerator,
-    'json': JsonReportGenerator,
+    'stdout': report_generators.generate_stdout_report,
+    'csv': report_generators.generate_csv_report,
+    'json': report_generators.generate_json_report,
 }
 
 
@@ -29,7 +27,6 @@ def show_top_words_report(popular_words, user_settings):
     """ Display code base report """
     report_format = user_settings.report_format
     report_data = _generate_report_data(popular_words)
-    report_generator = REPORT_GENERATOR_FACTORY.get(
-        report_format, StdoutReportGenerator)(report_format)
+    generate_report = REPORT_GENERATOR_FACTORY.get(report_format)
 
-    report_generator.generate_report(report_data)
+    generate_report(report_data)
